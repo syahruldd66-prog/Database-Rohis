@@ -20,7 +20,6 @@
         .tab-content {
             animation: fadeInSlide 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-        /* Efek Glassmorphism Mewah */
         .glass-card {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
@@ -58,7 +57,7 @@
                     </div>
                     <div>
                         <h1 class="text-sm font-black tracking-wider text-white">ROHIS SMKN 1</h1>
-                        <p class="text-xs text-emerald-400 font-medium">Wajo Portal v4.1</p>
+                        <p class="text-xs text-emerald-400 font-medium">Wajo Portal v4.3</p>
                     </div>
                 </div>
 
@@ -355,20 +354,35 @@
                     </div>
                 </section>
 
-                <!-- TAB 6: ABSENSI & QR SCANNER -->
+                <!-- TAB 6: ABSENSI & QR SCANNER (CLEAN & ANTI-DOUBLE) -->
                 <section id="content-absensi" class="tab-content space-y-6 hidden">
                     <div>
-                        <h3 class="text-xl font-bold text-slate-800">Absensi & QR Kamera Scanner</h3>
-                        <p class="text-sm text-slate-500">Scan QR kartu anggota menggunakan kamera HP atau buat QR siswa baru.</p>
+                        <h3 class="text-xl font-bold text-slate-800">Absensi & Kamera Scanner</h3>
+                        <p class="text-sm text-slate-500">Scan QR kartu anggota atau buat QR kode identitas siswa.</p>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Kamera Scanner -->
+                        <!-- Clean Camera Scanner -->
                         <div class="glass-card p-6 rounded-3xl shadow-sm space-y-4">
-                            <h4 class="font-bold text-slate-800 text-base"><i class="fa-solid fa-camera mr-2 text-emerald-600"></i>Scan QR Kehadiran (Kamera HP)</h4>
-                            <p class="text-xs text-slate-500">Arahkan kamera ke QR Code Anggota Rohis.</p>
-                            <div id="reader" class="w-full rounded-2xl overflow-hidden border border-slate-200"></div>
-                            <div id="scan-result" class="p-3 bg-emerald-50 text-emerald-800 text-xs rounded-xl font-semibold text-center hidden"></div>
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-bold text-slate-800 text-base"><i class="fa-solid fa-camera mr-2 text-emerald-600"></i>Kamera Presensi</h4>
+                                <div class="space-x-2">
+                                    <button onclick="startScanner()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition shadow-sm"><i class="fa-solid fa-play mr-1"></i> Mulai</button>
+                                    <button onclick="stopScanner()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition shadow-sm"><i class="fa-solid fa-stop mr-1"></i> Berhenti</button>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500">Tekan 'Mulai' untuk mengaktifkan kamera pemindai QR (Anti-Double Absen).</p>
+                            
+                            <!-- Kotak Viewfinder Kamera -->
+                            <div class="relative w-full aspect-square max-w-sm mx-auto bg-slate-900 rounded-2xl overflow-hidden shadow-inner border-2 border-emerald-500/50 flex items-center justify-center">
+                                <div id="clean-reader" class="w-full h-full"></div>
+                                <div id="scanner-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 bg-slate-900/90 z-10">
+                                    <i class="fa-solid fa-video-slash text-3xl mb-2 text-slate-500"></i>
+                                    <span class="text-xs font-medium">Kamera Belum Aktif</span>
+                                </div>
+                            </div>
+
+                            <div id="scan-result" class="p-3 bg-emerald-50 text-emerald-800 text-xs rounded-xl font-semibold text-center hidden border border-emerald-200"></div>
                         </div>
 
                         <!-- Buat QR Siswa -->
@@ -410,11 +424,10 @@
                         </button>
                     </div>
 
-                    <!-- Status Spreadsheet Real-Time -->
                     <div class="glass-card p-6 rounded-3xl shadow-sm space-y-3">
                         <h4 class="font-bold text-slate-800 text-base"><i class="fa-solid fa-circle-check mr-2 text-emerald-600"></i>Status Koneksi Google Spreadsheet</h4>
                         <p class="text-xs text-slate-600 leading-relaxed">
-                            Web App URL Google Apps Script Anda telah terpasang secara otomatis. Setiap transaksi kas atau presensi absensi yang masuk akan langsung tercatat secara real-time ke lembar Google Spreadsheet.
+                            Web App URL Google Apps Script Anda telah terpasang secara otomatis dan aktif real-time.
                         </p>
                     </div>
 
@@ -529,10 +542,10 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // URL Google Apps Script Web App Anda
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwH89Nn2SKEWpIuSuxvB6D2MTLeBILgwNzmQQblDaqBD7rzKMAT9fQy3MeQzh4ztaeZTw/exec";
 
         let isAdmin = localStorage.getItem('rohis_is_admin') === 'true';
+        let html5QrCode = null;
 
         let transaksiList = JSON.parse(localStorage.getItem('rohis_transaksi')) || [
             { tanggal: '2026-10-18', ket: 'Infak Anggota Pendiklatan', jenis: 'masuk', jumlah: 150000 },
@@ -557,13 +570,16 @@
             renderAgenda();
             renderGaleri();
             updateAuthUI();
-            initQrScanner();
         };
 
         function switchTab(targetId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             const targetEl = document.getElementById('content-' + targetId);
             targetEl.classList.remove('hidden');
+
+            if(targetId !== 'absensi') {
+                stopScanner();
+            }
 
             const btnBack = document.getElementById('btn-back');
             if (targetId === 'beranda') {
@@ -593,7 +609,7 @@
                 'struktur': 'Struktur Organisasi',
                 'portofolio': 'Portofolio & Galeri',
                 'keuangan': 'Manajemen Keuangan Kas',
-                'absensi': 'Absensi & QR Scanner',
+                'absensi': 'Absensi & Kamera Scanner',
                 'admin': 'Panel Administrator'
             };
             document.getElementById('page-title').innerText = titles[targetId] || 'Portal Rohis';
@@ -692,46 +708,85 @@
             document.getElementById('siswa-qr-label').innerText = `QR Code untuk: ${nama} (${kelas}) berhasil dibuat!`;
         }
 
-        // Kamera QR Scanner & Real-time Absen ke Spreadsheet
-        function initQrScanner() {
-            const scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 200 });
-            scanner.render((decodedText) => {
-                const resDiv = document.getElementById('scan-result');
-                resDiv.classList.remove('hidden');
-                resDiv.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Berhasil Scan: <b>${decodedText}</b> (Menyimpan ke Spreadsheet...)`;
+        // Clean QR Scanner dengan Anti-Double Absen Hari Ini
+        function startScanner() {
+            const placeholder = document.getElementById('scanner-placeholder');
+            placeholder.classList.add('hidden');
 
-                // Parsing teks QR (Format: ROHIS-ABSEN:Nama|Kelas)
-                let namaSiswa = decodedText;
-                let kelasSiswa = "Anggota Rohis";
-                if(decodedText.includes("ROHIS-ABSEN:")) {
-                    let rawData = decodedText.replace("ROHIS-ABSEN:", "").split("|");
-                    namaSiswa = rawData[0];
-                    kelasSiswa = rawData[1] || "XI";
+            if (!html5QrCode) {
+                html5QrCode = new Html5Qrcode("clean-reader");
+            }
+
+            html5QrCode.start(
+                { facingMode: "environment" }, 
+                { fps: 10, qrbox: { width: 200, height: 200 } },
+                (decodedText) => {
+                    const resDiv = document.getElementById('scan-result');
+                    resDiv.classList.remove('hidden');
+
+                    let namaSiswa = decodedText;
+                    let kelasSiswa = "Anggota Rohis";
+                    if(decodedText.includes("ROHIS-ABSEN:")) {
+                        let rawData = decodedText.replace("ROHIS-ABSEN:", "").split("|");
+                        namaSiswa = rawData[0];
+                        kelasSiswa = rawData[1] || "XI";
+                    }
+
+                    // Pengecekan Anti-Double Absen Hari Ini
+                    const today = new Date().toISOString().slice(0, 10);
+                    const absenKey = `absen_${today}_${namaSiswa.toLowerCase().trim()}`;
+
+                    if (localStorage.getItem(absenKey)) {
+                        resDiv.className = "p-3 bg-amber-50 text-amber-800 text-xs rounded-xl font-semibold text-center border border-amber-200";
+                        resDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> <b>${namaSiswa}</b> sudah tercatat absen hari ini! (Tidak dikirim ke Spreadsheet)`;
+                        return;
+                    }
+
+                    resDiv.className = "p-3 bg-emerald-50 text-emerald-800 text-xs rounded-xl font-semibold text-center border border-emerald-200";
+                    resDiv.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Scan Sukses: <b>${namaSiswa}</b> (Mengirim ke Spreadsheet...)`;
+
+                    const payload = {
+                        type: "Absensi",
+                        nama: namaSiswa,
+                        kelas: kelasSiswa,
+                        status: "Hadir (Scan Kamera)",
+                        tanggal: today
+                    };
+
+                    fetch(SCRIPT_URL, {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    }).then(() => {
+                        localStorage.setItem(absenKey, "true");
+                        resDiv.innerHTML = `<i class="fa-solid fa-cloud-arrow-up mr-1"></i> Absen <b>${namaSiswa}</b> (${kelasSiswa}) Berhasil Masuk Spreadsheet!`;
+                    }).catch(err => {
+                        console.error("Gagal sync:", err);
+                        resDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Gagal terhubung ke Spreadsheet.`;
+                    });
+
+                    stopScanner();
+                },
+                (errorMessage) => {
+                    // frame scanning error ignore
                 }
-
-                // Kirim real-time ke Google Spreadsheet
-                const payload = {
-                    type: "Absensi",
-                    nama: namaSiswa,
-                    kelas: kelasSiswa,
-                    status: "Hadir (Scan QR)",
-                    tanggal: new Date().toISOString().slice(0, 10)
-                };
-
-                fetch(SCRIPT_URL, {
-                    method: "POST",
-                    mode: "no-cors",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                }).then(() => {
-                    resDiv.innerHTML = `<i class="fa-solid fa-cloud-arrow-up mr-1"></i> Absen <b>${namaSiswa}</b> (${kelasSiswa}) Berhasil Tercatat Real-Time!`;
-                }).catch(err => {
-                    console.error("Gagal sync:", err);
-                });
-
-            }, (error) => {
-                // scanning error ignore
+            ).catch(err => {
+                alert("Gagal membuka kamera. Pastikan izin kamera di browser diaktifkan.");
+                placeholder.classList.remove('hidden');
             });
+        }
+
+        function stopScanner() {
+            if (html5QrCode && html5QrCode.isScanning) {
+                html5QrCode.stop().then(() => {
+                    document.getElementById('scanner-placeholder').classList.remove('hidden');
+                }).catch(err => {
+                    console.error("Gagal stop scanner", err);
+                });
+            } else {
+                document.getElementById('scanner-placeholder').classList.remove('hidden');
+            }
         }
 
         function renderAgenda() {
@@ -865,7 +920,6 @@
             renderKeuangan();
             closeModal('modal-transaksi');
 
-            // Kirim transaksi kas real-time ke Google Spreadsheet
             const payload = {
                 type: "Kas",
                 tanggal: tanggal,
