@@ -46,19 +46,35 @@
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased selection:bg-emerald-500 selection:text-white">
 
+    <!-- Audio Latar Belakang Musik Religi/Arab (Volume Sedang) -->
+    <audio id="bg-music" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=arabic-flute-middle-east-oud-instrumental-110543.mp3" type="audio/mpeg">
+    </audio>
+
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar Navigasi -->
         <aside id="sidebar" class="bg-emerald-950 text-white w-64 space-y-6 py-6 px-4 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-30 flex flex-col justify-between shadow-2xl border-r border-emerald-900/50">
             <div>
                 <!-- Logo & Judul -->
-                <div class="flex items-center space-x-3 px-2 mb-8">
+                <div class="flex items-center space-x-3 px-2 mb-6">
                     <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 p-3 rounded-2xl shadow-lg border border-emerald-500/30">
                         <i class="fa-solid fa-mosque text-2xl text-emerald-100 animate-pulse"></i>
                     </div>
                     <div>
                         <h1 class="text-sm font-black tracking-wider text-white">ROHIS SMKN 1</h1>
-                        <p class="text-xs text-emerald-400 font-medium">Wajo Portal v4.3</p>
+                        <p class="text-xs text-emerald-400 font-medium">Wajo Portal v4.4</p>
                     </div>
+                </div>
+
+                <!-- Kontrol Musik Latar -->
+                <div class="mb-4 px-2 py-2.5 bg-emerald-900/50 border border-emerald-800/60 rounded-xl flex items-center justify-between text-xs text-emerald-200">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-music text-emerald-400 animate-bounce"></i>
+                        <span>Musik Religi</span>
+                    </div>
+                    <button onclick="toggleMusic()" id="music-toggle-btn" class="bg-emerald-700 hover:bg-emerald-600 text-white px-2.5 py-1 rounded-lg font-bold transition">
+                        <i class="fa-solid fa-play"></i>
+                    </button>
                 </div>
 
                 <!-- Menu Navigasi -->
@@ -74,6 +90,10 @@
                     <button onclick="switchTab('struktur')" class="tab-btn btn-click-anim w-full flex items-center space-x-3 py-3 px-4 rounded-xl text-sm font-semibold transition text-emerald-300 hover:bg-emerald-900/60 hover:text-white" data-target="struktur">
                         <i class="fa-solid fa-sitemap w-5 text-emerald-400"></i>
                         <span>Struktur Organisasi</span>
+                    </button>
+                    <button onclick="switchTab('humas')" class="tab-btn btn-click-anim w-full flex items-center space-x-3 py-3 px-4 rounded-xl text-sm font-semibold transition text-emerald-300 hover:bg-emerald-900/60 hover:text-white" data-target="humas">
+                        <i class="fa-solid fa-bullhorn w-5 text-emerald-400"></i>
+                        <span>Database Humas (Kultum)</span>
                     </button>
                     <button onclick="switchTab('portofolio')" class="tab-btn btn-click-anim w-full flex items-center space-x-3 py-3 px-4 rounded-xl text-sm font-semibold transition text-emerald-300 hover:bg-emerald-900/60 hover:text-white" data-target="portofolio">
                         <i class="fa-solid fa-images w-5 text-emerald-400"></i>
@@ -144,16 +164,16 @@
                                 <span>Portal Resmi Rohis SMKN 1 Wajo</span>
                             </div>
                             <h2 class="text-2xl md:text-4xl font-black tracking-tight leading-tight">Ahlan Wa Sahlan, Pengurus & Anggota Rohis! ✨</h2>
-                            <p class="text-emerald-100/90 text-sm md:text-base leading-relaxed">Kelola agenda, pantau kas organisasi, buat QR Siswa, scan kamera presensi real-time, dan terhubung langsung ke Google Spreadsheet.</p>
+                            <p class="text-emerald-100/90 text-sm md:text-base leading-relaxed">Kelola agenda, struktur organisasi, jadwal kultum masjid/musholla, kas transparan, dan absensi real-time ke Spreadsheet.</p>
                             
                             <div class="pt-2 flex flex-wrap gap-3">
                                 <button onclick="switchTab('agenda')" class="btn-click-anim bg-white text-emerald-900 text-xs font-bold px-5 py-3 rounded-xl shadow-lg hover:bg-emerald-50 transition flex items-center space-x-2">
                                     <i class="fa-solid fa-calendar-days text-emerald-600"></i>
                                     <span>Lihat Agenda</span>
                                 </button>
-                                <button onclick="switchTab('absensi')" class="btn-click-anim bg-emerald-700/80 hover:bg-emerald-700 text-white text-xs font-bold px-5 py-3 rounded-xl border border-emerald-600 transition flex items-center space-x-2">
-                                    <i class="fa-solid fa-qrcode text-emerald-300"></i>
-                                    <span>Scan & QR Absen</span>
+                                <button onclick="switchTab('humas')" class="btn-click-anim bg-emerald-700/80 hover:bg-emerald-700 text-white text-xs font-bold px-5 py-3 rounded-xl border border-emerald-600 transition flex items-center space-x-2">
+                                    <i class="fa-solid fa-bullhorn text-emerald-300"></i>
+                                    <span>Jadwal Kultum</span>
                                 </button>
                             </div>
                         </div>
@@ -196,62 +216,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="space-y-4 pt-2">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="text-lg font-black text-slate-800 tracking-tight">Pusat Navigasi Menu</h3>
-                                <p class="text-xs text-slate-500">Pilih menu di bawah untuk mengakses fitur portal.</p>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                            <div onclick="switchTab('agenda')" class="interactive-card glass-card p-6 rounded-3xl shadow-sm hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center group relative overflow-hidden">
-                                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition"></div>
-                                <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-inner group-hover:scale-110">
-                                    <i class="fa-solid fa-calendar-days"></i>
-                                </div>
-                                <h4 class="font-black text-slate-800 text-sm mb-1">Agenda Kegiatan</h4>
-                                <p class="text-xs text-slate-400 leading-relaxed">Jadwal pendik, outbound, mabit, dan raker</p>
-                            </div>
-
-                            <div onclick="switchTab('struktur')" class="interactive-card glass-card p-6 rounded-3xl shadow-sm hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center group relative overflow-hidden">
-                                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition"></div>
-                                <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-inner group-hover:scale-110">
-                                    <i class="fa-solid fa-sitemap"></i>
-                                </div>
-                                <h4 class="font-black text-slate-800 text-sm mb-1">Struktur Organisasi</h4>
-                                <p class="text-xs text-slate-400 leading-relaxed">Bagan susunan pengurus dan pembina Rohis</p>
-                            </div>
-
-                            <div onclick="switchTab('portofolio')" class="interactive-card glass-card p-6 rounded-3xl shadow-sm hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center group relative overflow-hidden">
-                                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition"></div>
-                                <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-inner group-hover:scale-110">
-                                    <i class="fa-solid fa-images"></i>
-                                </div>
-                                <h4 class="font-black text-slate-800 text-sm mb-1">Portofolio & Galeri</h4>
-                                <p class="text-xs text-slate-400 leading-relaxed">Dokumentasi foto kegiatan kebersamaan</p>
-                            </div>
-
-                            <div onclick="switchTab('keuangan')" class="interactive-card glass-card p-6 rounded-3xl shadow-sm hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center group relative overflow-hidden">
-                                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition"></div>
-                                <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-inner group-hover:scale-110">
-                                    <i class="fa-solid fa-wallet"></i>
-                                </div>
-                                <h4 class="font-black text-slate-800 text-sm mb-1">Keuangan Kas</h4>
-                                <p class="text-xs text-slate-400 leading-relaxed">Pencatatan uang masuk dan keluar transparan</p>
-                            </div>
-
-                            <div onclick="switchTab('absensi')" class="interactive-card glass-card p-6 rounded-3xl shadow-sm hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center group relative overflow-hidden">
-                                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition"></div>
-                                <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-inner group-hover:scale-110">
-                                    <i class="fa-solid fa-qrcode"></i>
-                                </div>
-                                <h4 class="font-black text-slate-800 text-sm mb-1">Absensi & QR</h4>
-                                <p class="text-xs text-slate-400 leading-relaxed">Buat QR siswa & scan kamera presensi</p>
-                            </div>
-                        </div>
-                    </div>
                 </section>
 
                 <!-- TAB 2: AGENDA KEGIATAN -->
@@ -265,37 +229,53 @@
                     <div id="agenda-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                 </section>
 
-                <!-- TAB 3: STRUKTUR ORGANISASI -->
+                <!-- TAB 3: STRUKTUR ORGANISASI (BISA DIEDIT ADMIN) -->
                 <section id="content-struktur" class="tab-content space-y-6 hidden">
-                    <div>
-                        <h3 class="text-xl font-bold text-slate-800">Struktur Kepengurusan Rohis</h3>
-                        <p class="text-sm text-slate-500">Bagan susunan pengurus Rohis SMKN 1 Wajo.</p>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-800">Struktur Kepengurusan Rohis</h3>
+                            <p class="text-sm text-slate-500">Bagan susunan pengurus dan pembina Rohis SMKN 1 Wajo.</p>
+                        </div>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="interactive-card glass-card p-6 rounded-3xl shadow-sm text-center">
-                            <div class="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl font-bold shadow-inner">P</div>
-                            <h4 class="font-bold text-slate-800 text-base">Pembina Rohis</h4>
-                            <p class="text-xs text-emerald-600 font-semibold mt-1">Guru Pembimbing</p>
+                    <div id="struktur-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4"></div>
+                </section>
+
+                <!-- TAB 4: DATABASE HUMAS (JADWAL KULTUM MASJID & MUSHOLLA) -->
+                <section id="content-humas" class="tab-content space-y-6 hidden">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-800">Database Humas: Jadwal Kultum Masjid & Musholla</h3>
+                            <p class="text-sm text-slate-500">Daftar petugas penceramah / kultum untuk kegiatan keagamaan sekolah.</p>
                         </div>
-                        <div class="interactive-card glass-card p-6 rounded-3xl shadow-sm text-center">
-                            <div class="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl font-bold shadow-inner">K</div>
-                            <h4 class="font-bold text-slate-800 text-base">Ketua Rohis</h4>
-                            <p class="text-xs text-emerald-600 font-semibold mt-1">Pimpinan Organisasi</p>
+                        <button id="btn-tambah-kultum" onclick="openModal('modal-kultum')" class="btn-click-anim hidden bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center space-x-2">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Tambah Jadwal Kultum</span>
+                        </button>
+                    </div>
+
+                    <div class="glass-card rounded-3xl shadow-sm overflow-hidden">
+                        <div class="p-4 border-b border-slate-100 font-bold text-slate-800 text-sm flex justify-between items-center">
+                            <span>Jadwal Petugas Kultum</span>
+                            <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full"><i class="fa-solid fa-mosque mr-1"></i> Masjid & Musholla Sekolah</span>
                         </div>
-                        <div class="interactive-card glass-card p-6 rounded-3xl shadow-sm text-center">
-                            <div class="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl font-bold shadow-inner">S</div>
-                            <h4 class="font-bold text-slate-800 text-base">Sekretaris</h4>
-                            <p class="text-xs text-emerald-600 font-semibold mt-1">Administrasi & Surat</p>
-                        </div>
-                        <div class="interactive-card glass-card p-6 rounded-3xl shadow-sm text-center">
-                            <div class="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl font-bold shadow-inner">B</div>
-                            <h4 class="font-bold text-slate-800 text-base">Bendahara</h4>
-                            <p class="text-xs text-emerald-600 font-semibold mt-1">Keuangan & Kas</p>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-400 text-xs uppercase tracking-wider font-semibold">
+                                        <th class="p-4">Hari / Tanggal</th>
+                                        <th class="p-4">Lokasi</th>
+                                        <th class="p-4">Petugas Kultum</th>
+                                        <th class="p-4">Tema / Judul Materi</th>
+                                        <th id="th-aksi-humas" class="p-4 hidden">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabel-humas-body" class="text-sm divide-y divide-slate-100"></tbody>
+                            </table>
                         </div>
                     </div>
                 </section>
 
-                <!-- TAB 4: PORTOFOLIO / GALERI -->
+                <!-- TAB 5: PORTOFOLIO / GALERI -->
                 <section id="content-portofolio" class="tab-content space-y-6 hidden">
                     <div>
                         <h3 class="text-xl font-bold text-slate-800">Portofolio & Galeri Kegiatan</h3>
@@ -304,16 +284,16 @@
                     <div id="galeri-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5"></div>
                 </section>
 
-                <!-- TAB 5: KEUANGAN KAS -->
+                <!-- TAB 6: KEUANGAN KAS (DIKELOLA KHUSUS ADMIN) -->
                 <section id="content-keuangan" class="tab-content space-y-6 hidden">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <div>
                             <h3 class="text-xl font-bold text-slate-800">Manajemen Keuangan Kas</h3>
-                            <p class="text-sm text-slate-500">Pencatatan uang masuk dan uang keluar kas Rohis.</p>
+                            <p class="text-sm text-slate-500">Pencatatan uang masuk dan uang keluar kas Rohis (Diatur oleh Admin).</p>
                         </div>
                         <button id="btn-tambah-trans" onclick="openModal('modal-transaksi')" class="btn-click-anim hidden bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center space-x-2">
                             <i class="fa-solid fa-plus"></i>
-                            <span>Tambah Transaksi</span>
+                            <span>Tambah Transaksi Kas</span>
                         </button>
                     </div>
 
@@ -354,7 +334,7 @@
                     </div>
                 </section>
 
-                <!-- TAB 6: ABSENSI & QR SCANNER (CLEAN & ANTI-DOUBLE) -->
+                <!-- TAB 7: ABSENSI & QR SCANNER -->
                 <section id="content-absensi" class="tab-content space-y-6 hidden">
                     <div>
                         <h3 class="text-xl font-bold text-slate-800">Absensi & Kamera Scanner</h3>
@@ -362,7 +342,6 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Clean Camera Scanner -->
                         <div class="glass-card p-6 rounded-3xl shadow-sm space-y-4">
                             <div class="flex justify-between items-center">
                                 <h4 class="font-bold text-slate-800 text-base"><i class="fa-solid fa-camera mr-2 text-emerald-600"></i>Kamera Presensi</h4>
@@ -373,7 +352,6 @@
                             </div>
                             <p class="text-xs text-slate-500">Tekan 'Mulai' untuk mengaktifkan kamera pemindai QR (Anti-Double Absen).</p>
                             
-                            <!-- Kotak Viewfinder Kamera -->
                             <div class="relative w-full aspect-square max-w-sm mx-auto bg-slate-900 rounded-2xl overflow-hidden shadow-inner border-2 border-emerald-500/50 flex items-center justify-center">
                                 <div id="clean-reader" class="w-full h-full"></div>
                                 <div id="scanner-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 bg-slate-900/90 z-10">
@@ -381,11 +359,9 @@
                                     <span class="text-xs font-medium">Kamera Belum Aktif</span>
                                 </div>
                             </div>
-
                             <div id="scan-result" class="p-3 bg-emerald-50 text-emerald-800 text-xs rounded-xl font-semibold text-center hidden border border-emerald-200"></div>
                         </div>
 
-                        <!-- Buat QR Siswa -->
                         <div class="glass-card p-6 rounded-3xl shadow-sm space-y-4 flex flex-col justify-between">
                             <div>
                                 <h4 class="font-bold text-slate-800 text-base mb-2"><i class="fa-solid fa-id-card mr-2 text-emerald-600"></i>Generator QR Kartu Anggota</h4>
@@ -403,7 +379,6 @@
                                     <button type="submit" class="btn-click-anim w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl transition text-sm">Buat QR Code Siswa</button>
                                 </form>
                             </div>
-
                             <div class="mt-4 pt-4 border-t border-slate-200/60 flex flex-col items-center justify-center text-center">
                                 <div id="siswa-qr-box" class="p-3 bg-white border border-slate-200 rounded-2xl shadow-inner mb-2"></div>
                                 <span id="siswa-qr-label" class="text-xs font-bold text-slate-600">Silakan buat QR siswa di atas.</span>
@@ -412,26 +387,38 @@
                     </div>
                 </section>
 
-                <!-- TAB 7: PANEL ADMIN -->
+                <!-- TAB 8: PANEL ADMIN -->
                 <section id="content-admin" class="tab-content space-y-6 hidden">
                     <div class="bg-amber-50 border border-amber-200 p-5 rounded-3xl flex items-center justify-between">
                         <div>
                             <h3 class="text-lg font-extrabold text-amber-900"><i class="fa-solid fa-shield-halved mr-2"></i>Pusat Kontrol Admin & Integrasi Spreadsheet</h3>
-                            <p class="text-xs text-amber-700 mt-0.5">Kelola data kegiatan, keuangan, galeri foto, dan sinkronisasi real-time.</p>
+                            <p class="text-xs text-amber-700 mt-0.5">Kelola data kegiatan, struktur organisasi, jadwal kultum, dan kas organisasi.</p>
                         </div>
                         <button onclick="logoutAdmin()" class="btn-click-anim bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition shadow-sm">
                             Keluar Admin
                         </button>
                     </div>
 
-                    <div class="glass-card p-6 rounded-3xl shadow-sm space-y-3">
-                        <h4 class="font-bold text-slate-800 text-base"><i class="fa-solid fa-circle-check mr-2 text-emerald-600"></i>Status Koneksi Google Spreadsheet</h4>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            Web App URL Google Apps Script Anda telah terpasang secara otomatis dan aktif real-time.
-                        </p>
-                    </div>
-
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="glass-card p-6 rounded-3xl shadow-sm space-y-4">
+                            <h4 class="font-bold text-slate-800 text-base border-b pb-2"><i class="fa-solid fa-sitemap mr-2 text-emerald-600"></i>Tambah Pengurus Struktur</h4>
+                            <form onsubmit="tambahStrukturAdmin(event)" class="space-y-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Jabatan / Posisi</label>
+                                    <input type="text" id="adm-str-jabatan" required class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-600" placeholder="Contoh: Wakil Ketua">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap</label>
+                                    <input type="text" id="adm-str-nama" required class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-600" placeholder="Contoh: Ahmad Rifaldi">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Inisial Avatar / Huruf</label>
+                                    <input type="text" id="adm-str-inisial" required maxlength="2" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-600" placeholder="Contoh: W">
+                                </div>
+                                <button type="submit" class="btn-click-anim w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl transition text-sm">Simpan Pengurus</button>
+                            </form>
+                        </div>
+
                         <div class="glass-card p-6 rounded-3xl shadow-sm space-y-4">
                             <h4 class="font-bold text-slate-800 text-base border-b pb-2"><i class="fa-solid fa-calendar-plus mr-2 text-emerald-600"></i>Tambah Agenda Kegiatan Baru</h4>
                             <form onsubmit="tambahAgendaAdmin(event)" class="space-y-3">
@@ -458,29 +445,6 @@
                                 <button type="submit" class="btn-click-anim w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl transition text-sm">Simpan Agenda</button>
                             </form>
                         </div>
-
-                        <div class="glass-card p-6 rounded-3xl shadow-sm space-y-4">
-                            <h4 class="font-bold text-slate-800 text-base border-b pb-2"><i class="fa-solid fa-image mr-2 text-emerald-600"></i>Tambah Foto Portofolio / Galeri</h4>
-                            <form onsubmit="tambahGaleriAdmin(event)" class="space-y-3">
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Judul Foto / Kegiatan</label>
-                                    <input type="text" id="adm-galeri-judul" required class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-600" placeholder="Contoh: Dokumentasi Outbound">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Keterangan Waktu / Tempat</label>
-                                    <input type="text" id="adm-galeri-tgl" required class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-600" placeholder="Contoh: Minggu, 25 Okt 2026">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Warna / Tema Kartu</label>
-                                    <select id="adm-galeri-warna" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-600">
-                                        <option value="bg-emerald-800">Hijau Emerald</option>
-                                        <option value="bg-teal-700">Hijau Teal</option>
-                                        <option value="bg-amber-700">Kuning Emas</option>
-                                    </select>
-                                </div>
-                                <button type="submit" class="btn-click-anim w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl transition text-sm mt-6">Tambah Foto Galeri</button>
-                            </form>
-                        </div>
                     </div>
                 </section>
 
@@ -488,17 +452,18 @@
         </div>
     </div>
 
-    <!-- MODAL LOGIN ADMIN -->
+    <!-- MODAL LOGIN ADMIN (PIN TERSEMBUNYI) -->
     <div id="modal-login" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="glass-card w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4">
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-slate-800 text-lg">Login Administrator</h3>
                 <button onclick="closeModal('modal-login')" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <p class="text-xs text-slate-500">Masukkan PIN Admin untuk mengontrol seluruh data portal Rohis.</p>
+            <p class="text-xs text-slate-500">Masukkan PIN Admin untuk kontrol penuh struktur, kas, dan kultum.</p>
             <form onsubmit="prosesLogin(event)" class="space-y-3">
                 <div>
-                    <input type="password" id="admin-pin" required placeholder="PIN (Default: 1234)" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-600 text-center tracking-widest font-bold text-lg">
+                    <!-- Menggunakan type="password" agar karakter PIN tertutup titik-titik (tidak dimunculkan) -->
+                    <input type="password" id="admin-pin" required placeholder="Masukkan PIN Admin" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-600 text-center tracking-widest font-bold text-lg">
                 </div>
                 <button type="submit" class="btn-click-anim w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl text-sm transition shadow-sm">Masuk Sebagai Admin</button>
             </form>
@@ -540,12 +505,61 @@
         </div>
     </div>
 
+    <!-- MODAL TAMBAH JADWAL KULTUM HUMAS -->
+    <div id="modal-kultum" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="glass-card w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-slate-800 text-lg">Tambah Jadwal Kultum Humas</h3>
+                <button onclick="closeModal('modal-kultum')" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="tambahKultumAdmin(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Hari & Tanggal</label>
+                    <input type="text" id="kultum-tgl" required placeholder="Contoh: Jumat, 23 Okt 2026" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Lokasi</label>
+                    <select id="kultum-lokasi" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-600">
+                        <option value="Masjid Sekolah">Masjid Sekolah</option>
+                        <option value="Musholla SMKN 1 Wajo">Musholla SMKN 1 Wajo</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Petugas Kultum</label>
+                    <input type="text" id="kultum-petugas" required placeholder="Contoh: Ustadz / Nama Siswa" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Tema / Judul Materi</label>
+                    <input type="text" id="kultum-tema" required placeholder="Contoh: Keutamaan Sholat Berjamaah" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-600">
+                </div>
+                <div class="flex space-x-3 pt-2">
+                    <button type="button" onclick="closeModal('modal-kultum')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl text-sm font-semibold transition">Batal</button>
+                    <button type="submit" class="btn-click-anim flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-sm font-semibold transition">Simpan Jadwal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- JAVASCRIPT LOGIC -->
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwH89Nn2SKEWpIuSuxvB6D2MTLeBILgwNzmQQblDaqBD7rzKMAT9fQy3MeQzh4ztaeZTw/exec";
 
         let isAdmin = localStorage.getItem('rohis_is_admin') === 'true';
         let html5QrCode = null;
+
+        // Data Struktur Organisasi (Dapat diedit admin)
+        let strukturList = JSON.parse(localStorage.getItem('rohis_struktur')) || [
+            { jabatan: 'Pembina Rohis', nama: 'Guru Pembimbing', inisial: 'P' },
+            { jabatan: 'Ketua Rohis', nama: 'Pimpinan Organisasi', inisial: 'K' },
+            { jabatan: 'Sekretaris', nama: 'Administrasi & Surat', inisial: 'S' },
+            { jabatan: 'Bendahara', nama: 'Keuangan & Kas', inisial: 'B' }
+        ];
+
+        // Data Humas Kultum (Dapat diedit admin)
+        let humasList = JSON.parse(localStorage.getItem('rohis_humas')) || [
+            { tgl: 'Jumat, 23 Okt 2026', lokasi: 'Masjid Sekolah', petugas: 'Syahrul (XI TKJ)', tema: 'Keutamaan Menuntut Ilmu' },
+            { tgl: 'Jumat, 30 Okt 2026', lokasi: 'Musholla SMKN 1 Wajo', petugas: 'Ahmad Rifaldi', tema: 'Menjaga Kejujuran dalam Islam' }
+        ];
 
         let transaksiList = JSON.parse(localStorage.getItem('rohis_transaksi')) || [
             { tanggal: '2026-10-18', ket: 'Infak Anggota Pendiklatan', jenis: 'masuk', jumlah: 150000 },
@@ -554,23 +568,39 @@
 
         let agendaList = JSON.parse(localStorage.getItem('rohis_agenda')) || [
             { judul: 'Pendiklatan Rohis', tgl: 'Minggu, 18 Okt 2026', status: 'Sudah Terlaksana', desc: 'Pendidikan dan pelatihan dasar bagi anggota baru Rohis SMKN 1 Wajo.' },
-            { judul: 'Outbound Rohis', tgl: 'Minggu, 25 Okt 2026 (10:00 - Selesai)', status: 'Akan Datang', desc: 'Kegiatan kebersamaan, games edukatif, dan penguatan ukhuwah islamiyah.' },
-            { judul: 'Mabit (Malam Bina Iman dan Takwa)', tgl: 'Tanggal Menyesuaikan', status: 'Segera', desc: 'Bermalam di sekolah untuk ibadah malam, tahajud, dan materi keislaman.' },
-            { judul: 'Raker (Rapat Kerja)', tgl: 'Tanggal Menyesuaikan', status: 'Segera', desc: 'Penyusunan program kerja pengurus Rohis periode kepengurusan baru.' }
+            { judul: 'Outbound Rohis', tgl: 'Minggu, 25 Okt 2026 (10:00 - Selesai)', status: 'Akan Datang', desc: 'Kegiatan kebersamaan, games edukatif, dan penguatan ukhuwah islamiyah.' }
         ];
 
         let galeriList = JSON.parse(localStorage.getItem('rohis_galeri')) || [
             { judul: 'Dokumentasi Pendiklatan', tgl: 'Minggu, 18 Oktober 2026', warna: 'bg-emerald-800' },
-            { judul: 'Kajian Rutin Mingguan', tgl: 'Masjid Sekolah', warna: 'bg-teal-700' },
-            { judul: 'Bakti Sosial Anggota', tgl: 'Lingkungan Sekolah', warna: 'bg-emerald-700' }
+            { judul: 'Kajian Rutin Mingguan', tgl: 'Masjid Sekolah', warna: 'bg-teal-700' }
         ];
 
         window.onload = function() {
             renderKeuangan();
             renderAgenda();
+            renderStruktur();
+            renderHumas();
             renderGaleri();
             updateAuthUI();
+            
+            // Set volume musik latar agar sedang (lembut)
+            const bgMusic = document.getElementById('bg-music');
+            bgMusic.volume = 0.35;
         };
+
+        // Kontrol Musik Latar Belakang
+        function toggleMusic() {
+            const bgMusic = document.getElementById('bg-music');
+            const btn = document.getElementById('music-toggle-btn');
+            if(bgMusic.paused) {
+                bgMusic.play();
+                btn.innerHTML = `<i class="fa-solid fa-pause"></i>`;
+            } else {
+                bgMusic.pause();
+                btn.innerHTML = `<i class="fa-solid fa-play"></i>`;
+            }
+        }
 
         function switchTab(targetId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -607,6 +637,7 @@
                 'beranda': 'Beranda Dashboard',
                 'agenda': 'Agenda Kegiatan',
                 'struktur': 'Struktur Organisasi',
+                'humas': 'Database Humas (Kultum)',
                 'portofolio': 'Portofolio & Galeri',
                 'keuangan': 'Manajemen Keuangan Kas',
                 'absensi': 'Absensi & Kamera Scanner',
@@ -634,6 +665,7 @@
         function prosesLogin(e) {
             e.preventDefault();
             const pin = document.getElementById('admin-pin').value;
+            // PIN Admin Rahasia (tidak dimunculkan kodenya di antarmuka)
             if(pin === '1234') {
                 isAdmin = true;
                 localStorage.setItem('rohis_is_admin', 'true');
@@ -642,7 +674,7 @@
                 switchTab('admin');
                 alert('Berhasil masuk sebagai Admin!');
             } else {
-                alert('PIN Salah! Gunakan PIN default: 1234');
+                alert('PIN Salah! Akses ditolak.');
             }
             document.getElementById('admin-pin').value = '';
         }
@@ -660,22 +692,30 @@
             const adminBadge = document.getElementById('admin-badge');
             const authBtnText = document.getElementById('auth-btn-text');
             const btnTambahTrans = document.getElementById('btn-tambah-trans');
+            const btnTambahKultum = document.getElementById('btn-tambah-kultum');
             const thAksi = document.getElementById('th-aksi');
+            const thAksiHumas = document.getElementById('th-aksi-humas');
 
             if(isAdmin) {
                 adminNav.classList.remove('hidden');
                 adminBadge.classList.remove('hidden');
                 authBtnText.innerText = 'Panel Admin';
                 btnTambahTrans.classList.remove('hidden');
+                btnTambahKultum.classList.remove('hidden');
                 if(thAksi) thAksi.classList.remove('hidden');
+                if(thAksiHumas) thAksiHumas.classList.remove('hidden');
             } else {
                 adminNav.classList.add('hidden');
                 adminBadge.classList.add('hidden');
                 authBtnText.innerText = 'Login Admin';
                 btnTambahTrans.classList.add('hidden');
+                btnTambahKultum.classList.add('hidden');
                 if(thAksi) thAksi.classList.add('hidden');
+                if(thAksiHumas) thAksiHumas.classList.add('hidden');
             }
             renderKeuangan();
+            renderStruktur();
+            renderHumas();
         }
 
         function openModal(id) {
@@ -685,6 +725,87 @@
         function closeModal(id) {
             document.getElementById(id).classList.add('hidden');
             document.getElementById(id).classList.remove('flex');
+        }
+
+        // Render & Kelola Struktur Organisasi
+        function renderStruktur() {
+            const container = document.getElementById('struktur-container');
+            container.innerHTML = '';
+            strukturList.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'interactive-card glass-card p-6 rounded-3xl shadow-sm text-center flex flex-col justify-between';
+                div.innerHTML = `
+                    <div>
+                        <div class="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl font-bold shadow-inner">${item.inisial}</div>
+                        <h4 class="font-bold text-slate-800 text-base">${item.jabatan}</h4>
+                        <p class="text-xs text-emerald-600 font-semibold mt-1">${item.nama}</p>
+                    </div>
+                    ${isAdmin ? `<button onclick="hapusStruktur(${index})" class="mt-4 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold py-1.5 px-3 rounded-xl transition"><i class="fa-solid fa-trash mr-1"></i>Hapus</button>` : ''}
+                `;
+                container.appendChild(div);
+            });
+            localStorage.setItem('rohis_struktur', JSON.stringify(strukturList));
+        }
+
+        function tambahStrukturAdmin(e) {
+            e.preventDefault();
+            const jabatan = document.getElementById('adm-str-jabatan').value;
+            const nama = document.getElementById('adm-str-nama').value;
+            const inisial = document.getElementById('adm-str-inisial').value.toUpperCase();
+
+            strukturList.push({ jabatan, nama, inisial });
+            renderStruktur();
+            alert('Pengurus struktur berhasil ditambahkan!');
+            e.target.reset();
+            switchTab('struktur');
+        }
+
+        function hapusStruktur(index) {
+            if(confirm('Hapus posisi pengurus ini?')) {
+                strukturList.splice(index, 1);
+                renderStruktur();
+            }
+        }
+
+        // Render & Kelola Database Humas (Kultum)
+        function renderHumas() {
+            const tbody = document.getElementById('tabel-humas-body');
+            tbody.innerHTML = '';
+
+            humasList.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50/80 transition';
+                tr.innerHTML = `
+                    <td class="p-4 text-slate-500 font-medium">${item.tgl}</td>
+                    <td class="p-4"><span class="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full">${item.lokasi}</span></td>
+                    <td class="p-4 font-bold text-slate-800">${item.petugas}</td>
+                    <td class="p-4 text-slate-600">${item.tema}</td>
+                    ${isAdmin ? `<td class="p-4"><button onclick="hapusKultum(${index})" class="text-rose-500 hover:text-rose-700 text-xs font-bold"><i class="fa-solid fa-trash"></i></button></td>` : ''}
+                `;
+                tbody.appendChild(tr);
+            });
+            localStorage.setItem('rohis_humas', JSON.stringify(humasList));
+        }
+
+        function tambahKultumAdmin(e) {
+            e.preventDefault();
+            const tgl = document.getElementById('kultum-tgl').value;
+            const lokasi = document.getElementById('kultum-lokasi').value;
+            const petugas = document.getElementById('kultum-petugas').value;
+            const tema = document.getElementById('kultum-tema').value;
+
+            humasList.unshift({ tgl, lokasi, petugas, tema });
+            renderHumas();
+            closeModal('modal-kultum');
+            alert('Jadwal kultum berhasil ditambahkan!');
+            e.target.reset();
+        }
+
+        function hapusKultum(index) {
+            if(confirm('Hapus jadwal kultum ini?')) {
+                humasList.splice(index, 1);
+                renderHumas();
+            }
         }
 
         // Generator QR Siswa
@@ -732,7 +853,6 @@
                         kelasSiswa = rawData[1] || "XI";
                     }
 
-                    // Pengecekan Anti-Double Absen Hari Ini
                     const today = new Date().toISOString().slice(0, 10);
                     const absenKey = `absen_${today}_${namaSiswa.toLowerCase().trim()}`;
 
@@ -768,9 +888,7 @@
 
                     stopScanner();
                 },
-                (errorMessage) => {
-                    // frame scanning error ignore
-                }
+                (errorMessage) => {}
             ).catch(err => {
                 alert("Gagal membuka kamera. Pastikan izin kamera di browser diaktifkan.");
                 placeholder.classList.remove('hidden');
@@ -781,9 +899,7 @@
             if (html5QrCode && html5QrCode.isScanning) {
                 html5QrCode.stop().then(() => {
                     document.getElementById('scanner-placeholder').classList.remove('hidden');
-                }).catch(err => {
-                    console.error("Gagal stop scanner", err);
-                });
+                }).catch(err => {});
             } else {
                 document.getElementById('scanner-placeholder').classList.remove('hidden');
             }
@@ -855,19 +971,6 @@
                 container.appendChild(div);
             });
             localStorage.setItem('rohis_galeri', JSON.stringify(galeriList));
-        }
-
-        function tambahGaleriAdmin(e) {
-            e.preventDefault();
-            const judul = document.getElementById('adm-galeri-judul').value;
-            const tgl = document.getElementById('adm-galeri-tgl').value;
-            const warna = document.getElementById('adm-galeri-warna').value;
-
-            galeriList.push({ judul, tgl, warna });
-            renderGaleri();
-            alert('Foto galeri berhasil ditambahkan!');
-            e.target.reset();
-            switchTab('portofolio');
         }
 
         function hapusGaleri(index) {
