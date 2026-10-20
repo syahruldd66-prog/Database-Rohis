@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Rohis SMKN 1 Wajo</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- QR Code Generator & Scanner Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+    
+    <style>
+        @keyframes fadeInSlide {
+            0% { opacity: 0; transform: translateY(12px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .tab-content {
+            animation: fadeInSlide 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        /* Efek Glassmorphism Mewah */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .interactive-card {
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .interactive-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 30px -10px rgba(5, 150, 105, 0.15);
+        }
+        .btn-click-anim {
+            transition: transform 0.15s ease, background-color 0.2s ease;
+        }
+        .btn-click-anim:active {
+            transform: scale(0.95);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans antialiased selection:bg-emerald-500 selection:text-white">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Navigasi -->
+        <aside id="sidebar" class="bg-emerald-950 text-white w-64 space-y-6 py-6 px-4 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-30 flex flex-col justify-between shadow-2xl border-r border-emerald-900/50">
+            <div>
+                <!-- Logo & Judul -->
+                <div class="flex items-center space-x-3 px-2 mb-8">
+                    <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 p-3 rounded-2xl shadow-lg border border-emerald-500/30">
+                        <i class="fa-solid fa-mosque text-2xl text-emerald-100 animate-pulse"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-sm font-black tracking-wider text-white">ROHIS SMKN 1</h1>
+                        <p class="text-xs text-emerald-400 font-medium">Wajo Portal v4.1</p>
+                    </div>
+                </div>
+
+                <!-- Menu Navigasi -->
+                <nav class="space-y-1.5">
+                    <button onclick="switchTab('beranda')" class="tab-btn btn-click-anim w-full flex items-center space-x-3 py-3 px-4 rounded-xl text-sm font-semibold transition bg-emerald-600 text-white shadow-md shadow-emerald-900/30" data-target="beranda">
+                        <i class="fa-solid fa-house w-5 text-emerald-200"></i>
+                        <span>Beranda</span>
+                    </button>
+                    <button onclick="switchTab('agenda')" class="tab-btn btn-click-anim w-full flex items-center space-x-3 py-3 px-4 rounded-xl text-sm font-semibold transition text-emerald-300 hover:bg-emerald-900/60 hover:text-white" data-target="agenda">
+                        <i class="fa-solid fa-calendar-days w-5 text-emerald-400"></i>
+                        <span>Agenda Kegiatan</span>
+                    </button>
+                    <button onclick="switchTab('struktur')" class="tab-btn btn-click-anim w-full flex items-center space-x-3 py-3 px-4 rounded-xl text-sm font-semibold transition text-emerald-300 hover:bg-emerald-900/60 hover:text-white" data-target="struktur">
+                        <i class="fa-solid fa-sitemap w-5 text-emerald-400"></i>
+                        <span>Struktur Organisasi</span>
+                    </button>
+                    <button onclick="switchTab('portofolio')" class="tab-btn btn-click-anim w-full flex items-center space-x-3 py-3 px-4 rounded-xl text-sm font-semibold transition text-emerald-300 hover:bg-emerald-900/60 hover:text-white" data-target="portofolio">
+                        <i class="fa-solid fa-images w-5 text-emerald-400"></i>
+                        <span>Portofolio & Galeri</span>
+                    </button>
+                    <button onclick="switchTab('keuangan')" class="tab-btn btn-click-anim w-full flex items-center space-x-3 py-3 px-4 rounded-xl text-sm font-semibold transition text-emerald-300 hover:bg-emerald-900/60 hover:text-white" data-target="keuangan">
+                        <i class="fa-solid fa-wallet w-5 text-emerald-400"></i>
+                        <span>Keuangan Kas</span>
+                    </button>
+                    <button onclick="switchTab('absensi')" class="tab-btn btn-click-anim w-full flex items-center space-x-3 py-3 px-4 rounded-xl text-sm font-semibold transition text-emerald-300 hover:bg-emerald-900/60 hover:text-white" data-target="absensi">
+                        <i class="fa-solid fa-clipboard-user w-5 text-emerald-400"></i>
+                        <span>Absensi & QR Scanner</span>
+                    </button>
+                    <button id="nav-admin-btn" onclick="switchTab('admin')" class="tab-btn btn-click-anim w-full flex items-center space-x-3 py-3 px-4 rounded-xl text-sm font-semibold transition text-amber-300 hover:bg-emerald-900/60 hover:text-amber-200 hidden" data-target="admin">
+                        <i class="fa-solid fa-shield-halved w-5 text-amber-400"></i>
+                        <span>Panel Admin</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Footer Sidebar -->
+            <div class="px-3 py-3 rounded-xl bg-emerald-900/40 border border-emerald-800/50 text-xs text-emerald-400">
+                <p class="font-bold text-emerald-200">SMKN 1 Wajo</p>
+                <p class="mt-0.5 text-emerald-400/80">Kabupaten Wajo</p>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navbar -->
+            <header class="glass-card shadow-sm h-16 flex items-center justify-between px-6 z-20 sticky top-0 border-b border-slate-200/80">
+                <div class="flex items-center space-x-3">
+                    <button id="btn-back" onclick="switchTab('beranda')" class="hidden btn-click-anim bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 transition items-center space-x-1.5">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Kembali</span>
+                    </button>
+                    <button id="menu-toggle" onclick="toggleSidebar()" class="text-slate-600 hover:text-emerald-600 md:hidden focus:outline-none transition">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                    <h2 id="page-title" class="text-base md:text-lg font-bold text-slate-800">Beranda Dashboard</h2>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div id="admin-badge" class="hidden bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-full flex items-center space-x-1.5 shadow-sm border border-amber-200 animate-pulse">
+                        <i class="fa-solid fa-crown text-amber-600"></i>
+                        <span>Admin Mode</span>
+                    </div>
+                    <button id="auth-btn" onclick="handleAuthClick()" class="btn-click-anim bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-md shadow-emerald-600/20 transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        <span id="auth-btn-text">Login Admin</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Main Scrollable Content -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-slate-100/70 p-6 space-y-6">
+                
+                <!-- TAB 1: BERANDA -->
+                <section id="content-beranda" class="tab-content space-y-6">
+                    <div class="relative bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 rounded-3xl p-6 md:p-10 text-white shadow-2xl overflow-hidden border border-emerald-700/55">
+                        <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
+                            <i class="fa-solid fa-mosque text-[220px]"></i>
+                        </div>
+                        <div class="absolute right-20 top-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                        <div class="relative z-10 max-w-2xl space-y-3">
+                            <div class="inline-flex items-center space-x-2 bg-emerald-700/60 backdrop-blur-md text-emerald-100 text-xs font-bold px-3.5 py-1.5 rounded-full border border-emerald-500/30 shadow-inner">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                                <span>Portal Resmi Rohis SMKN 1 Wajo</span>
+                            </div>
+                            <h2 class="text-2xl md:text-4xl font-black tracking-tight leading-tight">Ahlan Wa Sahlan, Pengurus & Anggota Rohis! ✨</h2>
+                            <p class="text-emerald-100/90 text-sm md:text-base leading-relaxed">Kelola agenda, pantau kas organisasi, buat QR Siswa, scan kamera presensi real-time, dan terhubung langsung ke Google Spreadsheet.</p>
+                            
+                            <div class="pt-2 flex flex-wrap gap-3">
+                                <button onclick="switchTab('agenda')" class="btn-click-anim bg-white text-emerald-900 text-xs font-bold px-5 py-3 rounded-xl shadow-lg hover:bg-emerald-50 transition flex items-center space-x-2">
+                                    <i class="fa-solid fa-calendar-days text-emerald-600"></i>
+                                    <span>Lihat Agenda</span>
+                                </button>
+                                <button onclick="switchTab('absensi')" class="btn-click-anim bg-emerald-700/80 hover:bg-emerald-700 text-white text-xs font-bold px-5 py-3 rounded-xl border border-emerald-600 transition flex items-center space-x-2">
+                                    <i class="fa-solid fa-qrcode text-emerald-300"></i>
+                                    <span>Scan & QR Absen</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div class="interactive-card glass-card p-6 rounded-3xl shadow-sm flex items-center space-x-4 relative overflow-hidden">
+                            <div class="absolute right-0 top-0 bottom-0 w-2 bg-emerald-500"></div>
+                            <div class="bg-emerald-50 text-emerald-600 p-4 rounded-2xl text-2xl shadow-inner">
+                                <i class="fa-solid fa-wallet"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Kas Bersih</p>
+                                <h3 id="dash-kas" class="text-xl md:text-2xl font-black text-slate-800 mt-0.5">Rp 0</h3>
+                                <span class="text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded-md mt-1 inline-block">Real-time update</span>
+                            </div>
+                        </div>
+
+                        <div class="interactive-card glass-card p-6 rounded-3xl shadow-sm flex items-center space-x-4 relative overflow-hidden">
+                            <div class="absolute right-0 top-0 bottom-0 w-2 bg-amber-500"></div>
+                            <div class="bg-amber-50 text-amber-600 p-4 rounded-2xl text-2xl shadow-inner">
+                                <i class="fa-solid fa-calendar-star"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Agenda Terdekat</p>
+                                <h3 class="text-sm md:text-base font-black text-slate-800 mt-1">Outbound Rohis</h3>
+                                <span class="text-[10px] text-amber-700 font-semibold bg-amber-50 px-2 py-0.5 rounded-md mt-1 inline-block">25 Oktober 2026</span>
+                            </div>
+                        </div>
+
+                        <div class="interactive-card glass-card p-6 rounded-3xl shadow-sm flex items-center space-x-4 relative overflow-hidden">
+                            <div class="absolute right-0 top-0 bottom-0 w-2 bg-teal-500"></div>
+                            <div class="bg-teal-50 text-teal-600 p-4 rounded-2xl text-2xl shadow-inner">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Spreadsheet Sync</p>
+                                <h3 class="text-sm md:text-base font-black text-slate-800 mt-1">Connected API</h3>
+                                <span class="text-[10px] text-teal-700 font-semibold bg-teal-50 px-2 py-0.5 rounded-md mt-1 inline-block">Aktif Real-Time</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 pt-2">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-lg font-black text-slate-800 tracking-tight">Pusat Navigasi Menu</h3>
+                                <p class="text-xs text-slate-500">Pilih menu di bawah untuk mengakses fitur portal.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                            <div onclick="switchTab('agenda')" class="interactive-card glass-card p-6 rounded-3xl shadow-sm hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center group relative overflow-hidden">
+                                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition"></div>
+                                <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-inner group-hover:scale-110">
+                                    <i class="fa-solid fa-calendar-days"></i>
+                                </div>
+                                <h4 class="font-black text-slate-800 text-sm mb-1">Agenda Kegiatan</h4>
+                                <p class="text-xs text-slate-400 leading-relaxed">Jadwal pendik, outbound, mabit, dan raker</p>
+                            </div>
+
+                            <div onclick="switchTab('struktur')" class="interactive-card glass-card p-6 rounded-3xl shadow-sm hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center group relative overflow-hidden">
+                                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition"></div>
+                                <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-inner group-hover:scale-110">
+                                    <i class="fa-solid fa-sitemap"></i>
+                                </div>
+                                <h4 class="font-black text-slate-800 text-sm mb-1">Struktur Organisasi</h4>
+                                <p class="text-xs text-slate-400 leading-relaxed">Bagan susunan pengurus dan pembina Rohis</p>
+                            </div>
+
+                            <div onclick="switchTab('portofolio')" class="interactive-card glass-card p-6 rounded-3xl shadow-sm hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center group relative overflow-hidden">
+                                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition"></div>
+                                <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-inner group-hover:scale-110">
+                                    <i class="fa-solid fa-images"></i>
+                                </div>
+                                <h4 class="font-black text-slate-800 text-sm mb-1">Portofolio & Galeri</h4>
+                                <p class="text-xs text-slate-400 leading-relaxed">Dokumentasi foto kegiatan kebersamaan</p>
+                            </div>
+
+                            <div onclick="switchTab('keuangan')" class="interactive-card glass-card p-6 rounded-3xl shadow-sm hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center group relative overflow-hidden">
+                                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition"></div>
+                                <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-inner group-hover:scale-110">
+                                    <i class="fa-solid fa-wallet"></i>
+                                </div>
+                                <h4 class="font-black text-slate-800 text-sm mb-1">Keuangan Kas</h4>
+                                <p class="text-xs text-slate-400 leading-relaxed">Pencatatan uang masuk dan keluar transparan</p>
+                            </div>
+
+                            <div onclick="switchTab('absensi')" class="interactive-card glass-card p-6 rounded-3xl shadow-sm hover:border-emerald-500 cursor-pointer flex flex-col items-center text-center group relative overflow-hidden">
+                                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition"></div>
+                                <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-inner group-hover:scale-110">
+                                    <i class="fa-solid fa-qrcode"></i>
+                                </div>
+                                <h4 class="font-black text-slate-800 text-sm mb-1">Absensi & QR</h4>
+                                <p class="text-xs text-slate-400 leading-relaxed">Buat QR siswa & scan kamera presensi</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 2: AGENDA KEGIATAN -->
+                <section id="content-agenda" class="tab-content space-y-6 hidden">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-800">Agenda Kegiatan Rohis</h3>
+                            <p class="text-sm text-slate-500">Daftar kegiatan yang sudah dan akan dilaksanakan.</p>
+                        </div>
+                    </div>
+                    <div id="agenda-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </section>
+
+                <!-- TAB 3: STRUKTUR ORGANISASI -->
+                <section id="content-struktur" class="tab-content space-y-6 hidden">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800">Struktur Kepengurusan Rohis</h3>
+                        <p class="text-sm text-slate-500">Bagan susunan pengurus Rohis SMKN 1 Wajo.</p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="interactive-card glass-card p-6 rounded-3xl shadow-sm text-center">
+                            <div class="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl font-bold shadow-inner">P</div>
+                            <h4 class="font-bold text-slate-800 text-base">Pembina Rohis</h4>
+                            <p class="text-xs text-emerald-600 font-semibold mt-1">Guru Pembimbing</p>
+                        </div>
+                        <div class="interactive-card glass-card p-6 rounded-3xl shadow-sm text-center">
+                            <div class="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl font-bold shadow-inner">K</div>
+                            <h4 class="font-bold text-slate-800 text-base">Ketua Rohis</h4>
+                            <p class="text-xs text-emerald-600 font-semibold mt-1">Pimpinan Organisasi</p>
+                        </div>
+                        <div class="interactive-card glass-card p-6 rounded-3xl shadow-sm text-center">
+                            <div class="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl font-bold shadow-inner">S</div>
+                            <h4 class="font-bold text-slate-800 text-base">Sekretaris</h4>
+                            <p class="text-xs text-emerald-600 font-semibold mt-1">Administrasi & Surat</p>
+                        </div>
+                        <div class="interactive-card glass-card p-6 rounded-3xl shadow-sm text-center">
+                            <div class="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl font-bold shadow-inner">B</div>
+                            <h4 class="font-bold text-slate-800 text-base">Bendahara</h4>
+                            <p class="text-xs text-emerald-600 font-semibold mt-1">Keuangan & Kas</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 4: PORTOFOLIO / GALERI -->
+                <section id="content-portofolio" class="tab-content space-y-6 hidden">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800">Portofolio & Galeri Kegiatan</h3>
+                        <p class="text-sm text-slate-500">Dokumentasi kebersamaan dan potret kegiatan Rohis.</p>
+                    </div>
+                    <div id="galeri-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5"></div>
+                </section>
+
+                <!-- TAB 5: KEUANGAN KAS -->
+                <section id="content-keuangan" class="tab-content space-y-6 hidden">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-800">Manajemen Keuangan Kas</h3>
+                            <p class="text-sm text-slate-500">Pencatatan uang masuk dan uang keluar kas Rohis.</p>
+                        </div>
+                        <button id="btn-tambah-trans" onclick="openModal('modal-transaksi')" class="btn-click-anim hidden bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center space-x-2">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Tambah Transaksi</span>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="interactive-card glass-card p-5 rounded-3xl shadow-sm">
+                            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">TOTAL PEMASUKAN</p>
+                            <h4 id="total-masuk" class="text-xl font-black text-emerald-600 mt-1">Rp 0</h4>
+                        </div>
+                        <div class="interactive-card glass-card p-5 rounded-3xl shadow-sm">
+                            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">TOTAL PENGELUARAN</p>
+                            <h4 id="total-keluar" class="text-xl font-black text-rose-600 mt-1">Rp 0</h4>
+                        </div>
+                        <div class="interactive-card glass-card p-5 rounded-3xl shadow-sm">
+                            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">SALDO KAS BERSIH</p>
+                            <h4 id="total-saldo" class="text-xl font-black text-slate-800 mt-1">Rp 0</h4>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-3xl shadow-sm overflow-hidden">
+                        <div class="p-4 border-b border-slate-100 font-bold text-slate-800 text-sm flex justify-between items-center">
+                            <span>Riwayat Transaksi Kas</span>
+                            <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full"><i class="fa-solid fa-rotate mr-1"></i> Terhubung Spreadsheet Real-Time</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-400 text-xs uppercase tracking-wider font-semibold">
+                                        <th class="p-4">Tanggal</th>
+                                        <th class="p-4">Keterangan</th>
+                                        <th class="p-4">Jenis</th>
+                                        <th class="p-4">Jumlah</th>
+                                        <th id="th-aksi" class="p-4 hidden">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabel-transaksi-body" class="text-sm divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 6: ABSENSI & QR SCANNER -->
+                <section id="content-absensi" class="tab-content space-y-6 hidden">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800">Absensi & QR Kamera Scanner</h3>
+                        <p class="text-sm text-slate-500">Scan QR kartu anggota menggunakan kamera HP atau buat QR siswa baru.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Kamera Scanner -->
+                        <div class="glass-card p-6 rounded-3xl shadow-sm space-y-4">
+                            <h4 class="font-bold text-slate-800 text-base"><i class="fa-solid fa-camera mr-2 text-emerald-600"></i>Scan QR Kehadiran (Kamera HP)</h4>
+                            <p class="text-xs text-slate-500">Arahkan kamera ke QR Code Anggota Rohis.</p>
+                            <div id="reader" class="w-full rounded-2xl overflow-hidden border border-slate-200"></div>
+                            <div id="scan-result" class="p-3 bg-emerald-50 text-emerald-800 text-xs rounded-xl font-semibold text-center hidden"></div>
+                        </div>
+
+                        <!-- Buat QR Siswa -->
+                        <div class="glass-card p-6 rounded-3xl shadow-sm space-y-4 flex flex-col justify-between">
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-base mb-2"><i class="fa-solid fa-id-card mr-2 text-emerald-600"></i>Generator QR Kartu Anggota</h4>
+                                <p class="text-xs text-slate-500 mb-4">Masukkan data siswa untuk mencetak atau mendownload QR Code ID card mereka.</p>
+                                
+                                <form onsubmit="generateSiswaQR(event)" class="space-y-3">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Siswa</label>
+                                        <input type="text" id="siswa-nama" required class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-600" placeholder="Contoh: Syahrul">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-600 mb-1">Kelas / Jurusan</label>
+                                        <input type="text" id="siswa-kelas" required class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-600" placeholder="Contoh: XI TKJ">
+                                    </div>
+                                    <button type="submit" class="btn-click-anim w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl transition text-sm">Buat QR Code Siswa</button>
+                                </form>
+                            </div>
+
+                            <div class="mt-4 pt-4 border-t border-slate-200/60 flex flex-col items-center justify-center text-center">
+                                <div id="siswa-qr-box" class="p-3 bg-white border border-slate-200 rounded-2xl shadow-inner mb-2"></div>
+                                <span id="siswa-qr-label" class="text-xs font-bold text-slate-600">Silakan buat QR siswa di atas.</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 7: PANEL ADMIN -->
+                <section id="content-admin" class="tab-content space-y-6 hidden">
+                    <div class="bg-amber-50 border border-amber-200 p-5 rounded-3xl flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-extrabold text-amber-900"><i class="fa-solid fa-shield-halved mr-2"></i>Pusat Kontrol Admin & Integrasi Spreadsheet</h3>
+                            <p class="text-xs text-amber-700 mt-0.5">Kelola data kegiatan, keuangan, galeri foto, dan sinkronisasi real-time.</p>
+                        </div>
+                        <button onclick="logoutAdmin()" class="btn-click-anim bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition shadow-sm">
+                            Keluar Admin
+                        </button>
+                    </div>
+
+                    <!-- Status Spreadsheet Real-Time -->
+                    <div class="glass-card p-6 rounded-3xl shadow-sm space-y-3">
+                        <h4 class="font-bold text-slate-800 text-base"><i class="fa-solid fa-circle-check mr-2 text-emerald-600"></i>Status Koneksi Google Spreadsheet</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Web App URL Google Apps Script Anda telah terpasang secara otomatis. Setiap transaksi kas atau presensi absensi yang masuk akan langsung tercatat secara real-time ke lembar Google Spreadsheet.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="glass-card p-6 rounded-3xl shadow-sm space-y-4">
+                            <h4 class="font-bold text-slate-800 text-base border-b pb-2"><i class="fa-solid fa-calendar-plus mr-2 text-emerald-600"></i>Tambah Agenda Kegiatan Baru</h4>
+                            <form onsubmit="tambahAgendaAdmin(event)" class="space-y-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Kegiatan</label>
+                                    <input type="text" id="adm-agenda-nama" required class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-600" placeholder="Contoh: Mabit / Raker">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal & Waktu</label>
+                                    <input type="text" id="adm-agenda-tgl" required class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-600" placeholder="Contoh: Sabtu, 1 Nov 2026">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Status Kegiatan</label>
+                                    <select id="adm-agenda-status" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-600">
+                                        <option value="Akan Datang">Akan Datang</option>
+                                        <option value="Sudah Terlaksana">Sudah Terlaksana</option>
+                                        <option value="Segera">Segera / Perencanaan</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Deskripsi Singkat</label>
+                                    <textarea id="adm-agenda-desc" required rows="2" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-600" placeholder="Keterangan kegiatan..."></textarea>
+                                </div>
+                                <button type="submit" class="btn-click-anim w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl transition text-sm">Simpan Agenda</button>
+                            </form>
+                        </div>
+
+                        <div class="glass-card p-6 rounded-3xl shadow-sm space-y-4">
+                            <h4 class="font-bold text-slate-800 text-base border-b pb-2"><i class="fa-solid fa-image mr-2 text-emerald-600"></i>Tambah Foto Portofolio / Galeri</h4>
+                            <form onsubmit="tambahGaleriAdmin(event)" class="space-y-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Judul Foto / Kegiatan</label>
+                                    <input type="text" id="adm-galeri-judul" required class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-600" placeholder="Contoh: Dokumentasi Outbound">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Keterangan Waktu / Tempat</label>
+                                    <input type="text" id="adm-galeri-tgl" required class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-600" placeholder="Contoh: Minggu, 25 Okt 2026">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Warna / Tema Kartu</label>
+                                    <select id="adm-galeri-warna" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-600">
+                                        <option value="bg-emerald-800">Hijau Emerald</option>
+                                        <option value="bg-teal-700">Hijau Teal</option>
+                                        <option value="bg-amber-700">Kuning Emas</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn-click-anim w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl transition text-sm mt-6">Tambah Foto Galeri</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL LOGIN ADMIN -->
+    <div id="modal-login" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="glass-card w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-slate-800 text-lg">Login Administrator</h3>
+                <button onclick="closeModal('modal-login')" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-xs text-slate-500">Masukkan PIN Admin untuk mengontrol seluruh data portal Rohis.</p>
+            <form onsubmit="prosesLogin(event)" class="space-y-3">
+                <div>
+                    <input type="password" id="admin-pin" required placeholder="PIN (Default: 1234)" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-600 text-center tracking-widest font-bold text-lg">
+                </div>
+                <button type="submit" class="btn-click-anim w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl text-sm transition shadow-sm">Masuk Sebagai Admin</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL TAMBAH TRANSAKSI KAS -->
+    <div id="modal-transaksi" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="glass-card w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-slate-800 text-lg">Tambah Transaksi Kas</h3>
+                <button onclick="closeModal('modal-transaksi')" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="form-transaksi" onsubmit="tambahTransaksi(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal</label>
+                    <input type="date" id="trans-tanggal" required class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Keterangan</label>
+                    <input type="text" id="trans-ket" required placeholder="Contoh: Infak Jumat" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Jenis</label>
+                    <select id="trans-jenis" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-600">
+                        <option value="masuk">Uang Masuk</option>
+                        <option value="keluar">Uang Keluar</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah (Rp)</label>
+                    <input type="number" id="trans-jumlah" required placeholder="Contoh: 50000" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-600">
+                </div>
+                <div class="flex space-x-3 pt-2">
+                    <button type="button" onclick="closeModal('modal-transaksi')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl text-sm font-semibold transition">Batal</button>
+                    <button type="submit" class="btn-click-anim flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-sm font-semibold transition">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // URL Google Apps Script Web App Anda
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwH89Nn2SKEWpIuSuxvB6D2MTLeBILgwNzmQQblDaqBD7rzKMAT9fQy3MeQzh4ztaeZTw/exec";
+
+        let isAdmin = localStorage.getItem('rohis_is_admin') === 'true';
+
+        let transaksiList = JSON.parse(localStorage.getItem('rohis_transaksi')) || [
+            { tanggal: '2026-10-18', ket: 'Infak Anggota Pendiklatan', jenis: 'masuk', jumlah: 150000 },
+            { tanggal: '2026-10-19', ket: 'Beli Konsumsi Rapat', jenis: 'keluar', jumlah: 45000 }
+        ];
+
+        let agendaList = JSON.parse(localStorage.getItem('rohis_agenda')) || [
+            { judul: 'Pendiklatan Rohis', tgl: 'Minggu, 18 Okt 2026', status: 'Sudah Terlaksana', desc: 'Pendidikan dan pelatihan dasar bagi anggota baru Rohis SMKN 1 Wajo.' },
+            { judul: 'Outbound Rohis', tgl: 'Minggu, 25 Okt 2026 (10:00 - Selesai)', status: 'Akan Datang', desc: 'Kegiatan kebersamaan, games edukatif, dan penguatan ukhuwah islamiyah.' },
+            { judul: 'Mabit (Malam Bina Iman dan Takwa)', tgl: 'Tanggal Menyesuaikan', status: 'Segera', desc: 'Bermalam di sekolah untuk ibadah malam, tahajud, dan materi keislaman.' },
+            { judul: 'Raker (Rapat Kerja)', tgl: 'Tanggal Menyesuaikan', status: 'Segera', desc: 'Penyusunan program kerja pengurus Rohis periode kepengurusan baru.' }
+        ];
+
+        let galeriList = JSON.parse(localStorage.getItem('rohis_galeri')) || [
+            { judul: 'Dokumentasi Pendiklatan', tgl: 'Minggu, 18 Oktober 2026', warna: 'bg-emerald-800' },
+            { judul: 'Kajian Rutin Mingguan', tgl: 'Masjid Sekolah', warna: 'bg-teal-700' },
+            { judul: 'Bakti Sosial Anggota', tgl: 'Lingkungan Sekolah', warna: 'bg-emerald-700' }
+        ];
+
+        window.onload = function() {
+            renderKeuangan();
+            renderAgenda();
+            renderGaleri();
+            updateAuthUI();
+            initQrScanner();
+        };
+
+        function switchTab(targetId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            const targetEl = document.getElementById('content-' + targetId);
+            targetEl.classList.remove('hidden');
+
+            const btnBack = document.getElementById('btn-back');
+            if (targetId === 'beranda') {
+                btnBack.classList.add('hidden');
+                btnBack.classList.remove('flex');
+            } else {
+                btnBack.classList.remove('hidden');
+                btnBack.classList.add('flex');
+            }
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-600', 'text-white', 'shadow-md');
+                if(!btn.classList.contains('text-amber-300')) {
+                    btn.classList.add('text-emerald-300', 'hover:bg-emerald-900/60', 'hover:text-white');
+                }
+            });
+
+            const activeBtn = document.querySelector(`[data-target="${targetId}"]`);
+            if(activeBtn) {
+                activeBtn.classList.add('bg-emerald-600', 'text-white', 'shadow-md');
+                activeBtn.classList.remove('text-emerald-300', 'hover:bg-emerald-900/60', 'hover:text-white');
+            }
+
+            const titles = {
+                'beranda': 'Beranda Dashboard',
+                'agenda': 'Agenda Kegiatan',
+                'struktur': 'Struktur Organisasi',
+                'portofolio': 'Portofolio & Galeri',
+                'keuangan': 'Manajemen Keuangan Kas',
+                'absensi': 'Absensi & QR Scanner',
+                'admin': 'Panel Administrator'
+            };
+            document.getElementById('page-title').innerText = titles[targetId] || 'Portal Rohis';
+
+            if(window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.add('-translate-x-full');
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
+
+        function handleAuthClick() {
+            if(isAdmin) {
+                switchTab('admin');
+            } else {
+                openModal('modal-login');
+            }
+        }
+
+        function prosesLogin(e) {
+            e.preventDefault();
+            const pin = document.getElementById('admin-pin').value;
+            if(pin === '1234') {
+                isAdmin = true;
+                localStorage.setItem('rohis_is_admin', 'true');
+                closeModal('modal-login');
+                updateAuthUI();
+                switchTab('admin');
+                alert('Berhasil masuk sebagai Admin!');
+            } else {
+                alert('PIN Salah! Gunakan PIN default: 1234');
+            }
+            document.getElementById('admin-pin').value = '';
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            localStorage.setItem('rohis_is_admin', 'false');
+            updateAuthUI();
+            switchTab('beranda');
+            alert('Berhasil keluar dari mode Admin.');
+        }
+
+        function updateAuthUI() {
+            const adminNav = document.getElementById('nav-admin-btn');
+            const adminBadge = document.getElementById('admin-badge');
+            const authBtnText = document.getElementById('auth-btn-text');
+            const btnTambahTrans = document.getElementById('btn-tambah-trans');
+            const thAksi = document.getElementById('th-aksi');
+
+            if(isAdmin) {
+                adminNav.classList.remove('hidden');
+                adminBadge.classList.remove('hidden');
+                authBtnText.innerText = 'Panel Admin';
+                btnTambahTrans.classList.remove('hidden');
+                if(thAksi) thAksi.classList.remove('hidden');
+            } else {
+                adminNav.classList.add('hidden');
+                adminBadge.classList.add('hidden');
+                authBtnText.innerText = 'Login Admin';
+                btnTambahTrans.classList.add('hidden');
+                if(thAksi) thAksi.classList.add('hidden');
+            }
+            renderKeuangan();
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+            document.getElementById(id).classList.add('flex');
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+            document.getElementById(id).classList.remove('flex');
+        }
+
+        // Generator QR Siswa
+        function generateSiswaQR(e) {
+            e.preventDefault();
+            const nama = document.getElementById('siswa-nama').value;
+            const kelas = document.getElementById('siswa-kelas').value;
+            
+            const box = document.getElementById('siswa-qr-box');
+            box.innerHTML = "";
+            
+            new QRCode(box, {
+                text: `ROHIS-ABSEN:${nama}|${kelas}`,
+                width: 130,
+                height: 130,
+                colorDark: "#065f46",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            document.getElementById('siswa-qr-label').innerText = `QR Code untuk: ${nama} (${kelas}) berhasil dibuat!`;
+        }
+
+        // Kamera QR Scanner & Real-time Absen ke Spreadsheet
+        function initQrScanner() {
+            const scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 200 });
+            scanner.render((decodedText) => {
+                const resDiv = document.getElementById('scan-result');
+                resDiv.classList.remove('hidden');
+                resDiv.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Berhasil Scan: <b>${decodedText}</b> (Menyimpan ke Spreadsheet...)`;
+
+                // Parsing teks QR (Format: ROHIS-ABSEN:Nama|Kelas)
+                let namaSiswa = decodedText;
+                let kelasSiswa = "Anggota Rohis";
+                if(decodedText.includes("ROHIS-ABSEN:")) {
+                    let rawData = decodedText.replace("ROHIS-ABSEN:", "").split("|");
+                    namaSiswa = rawData[0];
+                    kelasSiswa = rawData[1] || "XI";
+                }
+
+                // Kirim real-time ke Google Spreadsheet
+                const payload = {
+                    type: "Absensi",
+                    nama: namaSiswa,
+                    kelas: kelasSiswa,
+                    status: "Hadir (Scan QR)",
+                    tanggal: new Date().toISOString().slice(0, 10)
+                };
+
+                fetch(SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                }).then(() => {
+                    resDiv.innerHTML = `<i class="fa-solid fa-cloud-arrow-up mr-1"></i> Absen <b>${namaSiswa}</b> (${kelasSiswa}) Berhasil Tercatat Real-Time!`;
+                }).catch(err => {
+                    console.error("Gagal sync:", err);
+                });
+
+            }, (error) => {
+                // scanning error ignore
+            });
+        }
+
+        function renderAgenda() {
+            const container = document.getElementById('agenda-container');
+            container.innerHTML = '';
+            agendaList.forEach((item, index) => {
+                let badgeColor = 'bg-emerald-100 text-emerald-800';
+                if(item.status === 'Akan Datang') badgeColor = 'bg-amber-100 text-amber-800 border-l-4 border-l-amber-500';
+                
+                const div = document.createElement('div');
+                div.className = `interactive-card glass-card p-6 rounded-3xl shadow-sm flex flex-col justify-between ${badgeColor.includes('border-l-4') ? badgeColor : ''}`;
+                div.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="${badgeColor} text-xs font-bold px-3 py-1 rounded-full">${item.status}</span>
+                            <span class="text-xs text-slate-400 font-semibold"><i class="fa-regular fa-clock mr-1"></i> ${item.tgl}</span>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-lg mb-1">${item.judul}</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">${item.desc}</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-200/60 flex justify-between items-center text-xs">
+                        <span class="text-emerald-700 font-bold"><i class="fa-solid fa-circle-check mr-1"></i> Rohis SMKN 1 Wajo</span>
+                        ${isAdmin ? `<button onclick="hapusAgenda(${index})" class="text-rose-600 font-bold hover:underline"><i class="fa-solid fa-trash mr-1"></i>Hapus</button>` : ''}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            localStorage.setItem('rohis_agenda', JSON.stringify(agendaList));
+        }
+
+        function tambahAgendaAdmin(e) {
+            e.preventDefault();
+            const judul = document.getElementById('adm-agenda-nama').value;
+            const tgl = document.getElementById('adm-agenda-tgl').value;
+            const status = document.getElementById('adm-agenda-status').value;
+            const desc = document.getElementById('adm-agenda-desc').value;
+
+            agendaList.push({ judul, tgl, status, desc });
+            renderAgenda();
+            alert('Agenda berhasil ditambahkan!');
+            e.target.reset();
+            switchTab('agenda');
+        }
+
+        function hapusAgenda(index) {
+            if(confirm('Yakin ingin menghapus agenda ini?')) {
+                agendaList.splice(index, 1);
+                renderAgenda();
+            }
+        }
+
+        function renderGaleri() {
+            const container = document.getElementById('galeri-container');
+            container.innerHTML = '';
+            galeriList.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'interactive-card glass-card p-4 rounded-3xl shadow-sm';
+                div.innerHTML = `
+                    <div class="${item.warna} h-44 rounded-2xl flex items-center justify-center text-white mb-3 shadow-inner">
+                        <i class="fa-solid fa-image text-5xl opacity-80"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800 px-1 text-sm">${item.judul}</h4>
+                    <p class="text-xs text-slate-500 px-1 mt-0.5">${item.tgl}</p>
+                    ${isAdmin ? `<button onclick="hapusGaleri(${index})" class="mt-3 w-full bg-rose-50 text-rose-600 py-2 rounded-xl text-xs font-bold hover:bg-rose-100 transition"><i class="fa-solid fa-trash mr-1"></i>Hapus Foto</button>` : ''}
+                `;
+                container.appendChild(div);
+            });
+            localStorage.setItem('rohis_galeri', JSON.stringify(galeriList));
+        }
+
+        function tambahGaleriAdmin(e) {
+            e.preventDefault();
+            const judul = document.getElementById('adm-galeri-judul').value;
+            const tgl = document.getElementById('adm-galeri-tgl').value;
+            const warna = document.getElementById('adm-galeri-warna').value;
+
+            galeriList.push({ judul, tgl, warna });
+            renderGaleri();
+            alert('Foto galeri berhasil ditambahkan!');
+            e.target.reset();
+            switchTab('portofolio');
+        }
+
+        function hapusGaleri(index) {
+            if(confirm('Yakin ingin menghapus foto ini?')) {
+                galeriList.splice(index, 1);
+                renderGaleri();
+            }
+        }
+
+        function renderKeuangan() {
+            const tbody = document.getElementById('tabel-transaksi-body');
+            tbody.innerHTML = '';
+
+            let totalMasuk = 0;
+            let totalKeluar = 0;
+
+            transaksiList.forEach((item, index) => {
+                if(item.jenis === 'masuk') totalMasuk += Number(item.jumlah);
+                else totalKeluar += Number(item.jumlah);
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50/80 transition';
+                tr.innerHTML = `
+                    <td class="p-4 text-slate-500">${item.tanggal}</td>
+                    <td class="p-4 font-semibold text-slate-800">${item.ket}</td>
+                    <td class="p-4"><span class="px-3 py-1 rounded-full text-xs font-bold ${item.jenis === 'masuk' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${item.jenis === 'masuk' ? 'Uang Masuk' : 'Uang Keluar'}</span></td>
+                    <td class="p-4 font-black ${item.jenis === 'masuk' ? 'text-emerald-600' : 'text-rose-600'}">${item.jenis === 'masuk' ? '+' : '-'} Rp ${Number(item.jumlah).toLocaleString('id-ID')}</td>
+                    ${isAdmin ? `<td class="p-4"><button onclick="hapusTransaksi(${index})" class="text-rose-500 hover:text-rose-700 text-xs font-bold"><i class="fa-solid fa-trash"></i></button></td>` : ''}
+                `;
+                tbody.appendChild(tr);
+            });
+
+            const saldoBersih = totalMasuk - totalKeluar;
+            document.getElementById('total-masuk').innerText = `Rp ${totalMasuk.toLocaleString('id-ID')}`;
+            document.getElementById('total-keluar').innerText = `Rp ${totalKeluar.toLocaleString('id-ID')}`;
+            document.getElementById('total-saldo').innerText = `Rp ${saldoBersih.toLocaleString('id-ID')}`;
+            document.getElementById('dash-kas').innerText = `Rp ${saldoBersih.toLocaleString('id-ID')}`;
+
+            localStorage.setItem('rohis_transaksi', JSON.stringify(transaksiList));
+        }
+
+        function tambahTransaksi(e) {
+            e.preventDefault();
+            const tanggal = document.getElementById('trans-tanggal').value;
+            const ket = document.getElementById('trans-ket').value;
+            const jenis = document.getElementById('trans-jenis').value;
+            const jumlah = document.getElementById('trans-jumlah').value;
+
+            transaksiList.unshift({ tanggal, ket, jenis, jumlah });
+            renderKeuangan();
+            closeModal('modal-transaksi');
+
+            // Kirim transaksi kas real-time ke Google Spreadsheet
+            const payload = {
+                type: "Kas",
+                tanggal: tanggal,
+                ket: ket,
+                jenis: jenis,
+                jumlah: jumlah
+            };
+
+            fetch(SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                alert('Transaksi berhasil disimpan & disinkronkan real-time ke Spreadsheet!');
+            }).catch(err => {
+                console.error("Gagal sync kas:", err);
+            });
+
+            document.getElementById('form-transaksi').reset();
+        }
+
+        function hapusTransaksi(index) {
+            if(confirm('Hapus riwayat transaksi ini?')) {
+                transaksiList.splice(index, 1);
+                renderKeuangan();
+            }
+        }
+    </script>
+</body>
+</html>
